@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const cors = require('cors');
+const nodeCache = require('node-cache');
 require('dotenv').config();
 
 
@@ -13,6 +14,8 @@ app.use(express.json());
 
 const DUMMY_DATA_URL = process.env.DUMMY_DATA_URL;
 const DUMMY_DATA_PATH = path.join(__dirname, 'data', 'dummyData.json');
+
+const myCache = new nodeCache({ stdTTL: 100, checkperiod: 120 });
 
 let dummyData;
 
@@ -32,42 +35,59 @@ let dummyData;
 })() // anonymous function to fetch and save data in server during initialisation
 
 app.get('/api/data', (req, res) => {
-    let data = [...dummyData];
-  
-    const { name, language, version, bio, minversion, maxversion } = req.query;
-    
-    if (name) {
-      data = data.filter((item) => item.name.toLowerCase().includes(name.toLowerCase()));
-    }
-    if (language) {
-      data = data.filter((item) => item.language.toLowerCase() === language.toLowerCase());
-    }
-    if (version) {
-      const versionNumber = parseFloat(version);
-      data = data.filter((item) => item.version >= versionNumber);
-    }
-    if (bio) {
-      data = data.filter((item) => item.bio.toLowerCase().includes(bio.toLowerCase()));
+    const cacheKey = `${req.url}`;
+    const cachedData = myCache.get(cacheKey);
+
+    // If data is cached, return it
+    if (cachedData) {
+        console.log('Returning cached data');
+        return res.json(cachedData);
     }
 
-    if (minversion || maxversion) {
-        const minVer = parseFloat(minversion) || -Infinity;
-        const maxVer = parseFloat(maxversion) || Infinity;
-        data = data.filter((item) => item.version >= minVer && item.version <= maxVer);
-    }
-  
-    const { sortBy, order } = req.query;
-    if (sortBy) {
-      data.sort((a, b) => {
-        if (order === 'desc') {
-          return a[sortBy] < b[sortBy] ? 1 : -1;
+    try {
+        let data = [...dummyData];
+      
+        const { name, language, version, bio, minversion, maxversion } = req.query;
+        
+        if (name) {
+          data = data.filter((item) => item.name.toLowerCase().includes(name.toLowerCase()));
         }
-        if (order === 'asc') {
-            return a[sortBy] > b[sortBy] ? 1 : -1;
+        if (language) {
+          data = data.filter((item) => item.language.toLowerCase() === language.toLowerCase());
         }
-      });
+        if (version) {
+          const versionNumber = parseFloat(version);
+          data = data.filter((item) => item.version >= versionNumber);
+        }
+        if (bio) {
+          data = data.filter((item) => item.bio.toLowerCase().includes(bio.toLowerCase()));
+        }
+    
+        if (minversion || maxversion) {
+            const minVer = parseFloat(minversion) || -Infinity;
+            const maxVer = parseFloat(maxversion) || Infinity;
+            data = data.filter((item) => item.version >= minVer && item.version <= maxVer);
+        }
+      
+        const { sortBy, order } = req.query;
+        if (sortBy) {
+          data.sort((a, b) => {
+            if (order === 'desc') {
+              return a[sortBy] < b[sortBy] ? 1 : -1;
+            }
+            if (order === 'asc') {
+                return a[sortBy] > b[sortBy] ? 1 : -1;
+            }
+          });
+        }
+    
+        myCache.set(cacheKey, data);
+        
+        res.json(data);
+    } catch (error) {
+        console.error("Error fetching data: ", error);
+        res.status(500).json({ error: 'Error fetching data'});
     }
-    res.json(data);
 });
 
 app.listen(process.env.PORT, () => {
