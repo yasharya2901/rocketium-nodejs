@@ -36,6 +36,48 @@ GET - `/api/data`
 | `sortBy`        | String | Sorts data by specified field (`name`, `language`, `version`).    |
 | `order`         | String | Sort order (`asc` for ascending, `desc` for descending).          |
 
+## Example Links
+
+1. **Get all data:**
+
+   [https://rocketium-nodejs.onrender.com/api/data](https://rocketium-nodejs.onrender.com/api/data)
+
+2. **Filter by name (e.g., "Adeel"):**
+
+   [https://rocketium-nodejs.onrender.com/api/data?name=Adeel](https://rocketium-nodejs.onrender.com/api/data?name=Adeel)
+
+3. **Filter by language (e.g., "Sindhi"):**
+
+   [https://rocketium-nodejs.onrender.com/api/data?language=Sindhi](https://rocketium-nodejs.onrender.com/api/data?language=Sindhi)
+
+4. **Filter by version (e.g., greater than or equal to 2.0):**
+
+   [https://rocketium-nodejs.onrender.com/api/data?version=2.0](https://rocketium-nodejs.onrender.com/api/data?version=2.0)
+
+5. **Filter by bio (e.g., contains "pharetra"):**
+
+   [https://rocketium-nodejs.onrender.com/api/data?bio=pharetra](https://rocketium-nodejs.onrender.com/api/data?bio=pharetra)
+
+6. **Filter by version range (e.g., between 1.5 and 6.0):**
+
+   [https://rocketium-nodejs.onrender.com/api/data?minversion=1.5&maxversion=6.0](https://rocketium-nodejs.onrender.com/api/data?minversion=1.5&maxversion=6.0)
+
+7. **Sort by version in ascending order:**
+
+   [https://rocketium-nodejs.onrender.com/api/data?sortBy=version&order=asc](https://rocketium-nodejs.onrender.com/api/data?sortBy=version&order=asc)
+
+8. **Sort by version in descending order:**
+
+   [https://rocketium-nodejs.onrender.com/api/data?sortBy=version&order=desc](https://rocketium-nodejs.onrender.com/api/data?sortBy=version&order=desc)
+
+9. **Filter by name and sort by version descending:**
+
+   [https://rocketium-nodejs.onrender.com/api/data?name=Adeel&sortBy=version&order=desc](https://rocketium-nodejs.onrender.com/api/data?name=Adeel&sortBy=version&order=desc)
+
+10. **Filter by language and sort by name ascending:**
+
+    [https://rocketium-nodejs.onrender.com/api/data?language=Sindhi&sortBy=name&order=asc](https://rocketium-nodejs.onrender.com/api/data?language=Sindhi&sortBy=name&order=asc)
+
 # Getting Started
 ### Prerequisites
 
